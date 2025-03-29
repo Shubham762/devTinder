@@ -21,8 +21,17 @@ const app=express();
 // app.use("/",(req,res)=>{
 //     res.send("Hello from varanasi dashboard🙏!")
 // })
-
+//for query 
 app.get("/user",(req,res)=>{
+    console.log(req.query)
+    res.send({
+        firstName:"Shubham",
+        lastName:"Tiwari"
+    })
+})
+//for params
+app.get("/user/:userId/:name/:password",(req,res)=>{
+    console.log(req.params)
     res.send({
         firstName:"Shubham",
         lastName:"Tiwari"
@@ -35,9 +44,7 @@ app.post("/user",(req,res)=>{
 app.delete("/user",(req,res)=>{
     res.send("Data deleted successfully!😍")
 })
-app.use("/user",(req,res)=>{
-    res.send("Hello world!")
-})
+
 app.use("/test",(req,res)=>{
     res.send("Hello world!")
 })
