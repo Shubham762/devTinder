@@ -1,53 +1,28 @@
 const express=require('express');
 const app=express();
 
-// app.use("/",(req,res)=>{
-//     res.send("Hello from varanasi dashboard🙏!")
-// })
 
-// app.use("/test/2",(req,res)=>{
-//     res.send("abcd")
-// })
-// app.use("/user",(req,res)=>{
-//     res.send("Hello world!")
-// })
-// app.use("/hello",(req,res)=>{
-//     res.send("Hello hello hello!✌️")
-// })
-// app.listen(3000,()=>{
-//     console.log("server is running on port 3000");
-// })
-
-// app.use("/",(req,res)=>{
-//     res.send("Hello from varanasi dashboard🙏!")
-// })
-//for query 
-app.get("/user",(req,res)=>{
-    console.log(req.query)
-    res.send({
-        firstName:"Shubham",
-        lastName:"Tiwari"
-    })
-})
-//for params
-app.get("/user/:userId/:name/:password",(req,res)=>{
-    console.log(req.params)
-    res.send({
-        firstName:"Shubham",
-        lastName:"Tiwari"
-    })
-})
-app.post("/user",(req,res)=>{
-   // console.log("data saved successfully")
-  res.send("Data is saved successfully in the database")
-})
-app.delete("/user",(req,res)=>{
-    res.send("Data deleted successfully!😍")
-})
-
-app.use("/test",(req,res)=>{
-    res.send("Hello world!")
-})
+app.use("/user",[(req,res,next)=>{
+    console.log("printed")
+    //res.send("  Route Handler1! ") 
+    next();
+}],
+(req,res,next)=>{
+   // res.send("Route Handler2");
+    console.log("Route Handler2!")
+    next();
+},
+(req,res,next)=>{
+   // res.send("Route Handler3");
+    console.log("Route Handler3")
+    next();
+},
+(req,res,next)=>{
+    res.send("Route Handler4");
+    console.log("Route Handler4!");
+    //next();
+}
+)
 
 
 app.listen(7777,()=>{
