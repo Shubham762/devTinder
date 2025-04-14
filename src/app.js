@@ -1,30 +1,21 @@
 const express=require('express');
 const app=express();
+const { adminAuth,userAuth }=require('./middlewares/auth')
 
-
-app.use("/user",[(req,res,next)=>{
-    console.log("printed")
-    //res.send("  Route Handler1! ") 
-    next();
-}],
-(req,res,next)=>{
-   // res.send("Route Handler2");
-    console.log("Route Handler2!")
-    next();
-},
-(req,res,next)=>{
-   // res.send("Route Handler3");
-    console.log("Route Handler3")
-    next();
-},
-(req,res,next)=>{
-    res.send("Route Handler4");
-    console.log("Route Handler4!");
-    //next();
-}
-)
-
+app.use("/admin",adminAuth);
+app.get("/user/data",userAuth,(req,res)=>{
+    res.send("User Data sent");
+})
+app.get("/user/login",(req,res)=>{
+    res.send("User logged in successfully");
+})
+app.get("/admin/getAllData",(req,res)=>{
+      res.send("All admin Data");
+});
+app.get("/admin/deleteUser",(req,res)=>{
+    res.send("Deleted the user");
+})
 
 app.listen(7777,()=>{
-    console.log("listenng 7777 successfully ...")
+    console.log("listenng 7777 successfully ...");
 })
