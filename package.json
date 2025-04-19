@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev":"nodemon src/app.js"
+    "dev": "nodemon src/app.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.2",
+    "mongoose": "^8.13.2",
     "nodemon": "^3.1.9"
   }
 }

@@ -1,32 +1,31 @@
 const express=require('express');
+const connectDB=require('../src/config/database')
 const app=express();
-const { adminAuth,userAuth }=require('./middlewares/auth')
+const user=require('../src/models/user')
+app.post("/signup",async(req,res)=>{
+    const User=new user({
+        firstName:"Sachin",
+        lastName:"Tendulkar",
+        emailid:"sachin@abc.com",
+        password:"sachin@123",
+    });
+    try{
+        await User.save();
+        res.send("User added successfully!!")
+    }
+    catch(err){
+        conres.status(400).send("Error while saving data",err.message);
+    }
 
-app.use("/admin",adminAuth);
-app.get("/user/data",userAuth,(req,res)=>{
-    res.send("User Data sent");
-})
-app.get("/user/login",(req,res)=>{
-    res.send("User logged in successfully");
-})
-app.get("/admin/getAllData",(req,res)=>{
-      res.send("All admin Data");
-});
-app.get("/admin/deleteUser",(req,res)=>{
-    res.send("Deleted the user");
 })
 
-app.get("/getUserData",(req,res)=>{
-  // throw new Error;
-   res.send("user data sent")
+connectDB().then(()=>{
+    console.log("Database connected");
+    app.listen(7777,()=>{
+        console.log("listenng 7777 successfully ...");
+    })
 })
-app.get("/",(error,req,res,next)=>{ ///oder of the parameter matteres here
-   if(error){
-    res.status(500).send("Something went wrong");
-   }
-
- })
-
-app.listen(7777,()=>{
-    console.log("listenng 7777 successfully ...");
+.catch((err)=>{
+    console.log("database not connected");
 })
+
