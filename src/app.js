@@ -13,6 +13,42 @@ app.post("/signup",async(req,res)=>{
         conres.status(400).send("Error while saving data",err.message);
     }
 
+});
+
+app.get("/getuserone",async(req,res)=>{
+    const userLastname=req.body.lastName;
+    console.log("userlastname",userLastname)
+    try{
+        const userdetails=await user.findOne({lastName:userLastname});
+        res.send(userdetails);
+    }
+    catch(err){
+      res.status(400).send("Error while fetching data",err.message);
+    }
+  })
+
+app.get("/getuser",async(req,res)=>{
+    const userLastname=req.body.lastName;
+    console.log("userlastname",userLastname)
+    try{
+        const userdetails=await user.find({lastName:userLastname});
+        res.send(userdetails);
+    }
+    catch(err){
+      res.status(400).send("Error while fetching data",err.message);
+    }
+  })
+
+
+app.get("/feed",async(req,res)=>{
+    try{
+       const alluserdeatisles=await user.find({});
+       res.send(alluserdeatisles);
+    }
+    catch(err){
+        res.status(400).send("Error while fetching data",err.message);
+    }
+
 })
 
 connectDB().then(()=>{
