@@ -17,7 +17,6 @@ app.post("/signup",async(req,res)=>{
 
 app.get("/getuserone",async(req,res)=>{
     const userLastname=req.body.lastName;
-    console.log("userlastname",userLastname)
     try{
         const userdetails=await user.findOne({lastName:userLastname});
         res.send(userdetails);
@@ -29,13 +28,23 @@ app.get("/getuserone",async(req,res)=>{
 
 app.get("/getuser",async(req,res)=>{
     const userLastname=req.body.lastName;
-    console.log("userlastname",userLastname)
     try{
         const userdetails=await user.find({lastName:userLastname});
         res.send(userdetails);
     }
     catch(err){
       res.status(400).send("Error while fetching data",err.message);
+    }
+  })
+
+  app.delete("/deleteuser",async(req,res)=>{
+    const userId=req.body.userId;
+    try{
+        const usertodelete=await user.findByIdAndDelete({_id:userId});
+        res.status(200).send("User Deleted successfully");
+    }
+    catch(err){
+      res.status(400).send("Can not be deleted",err.message);
     }
   })
 
@@ -49,6 +58,20 @@ app.get("/feed",async(req,res)=>{
         res.status(400).send("Error while fetching data",err.message);
     }
 
+})
+
+app.patch("/user",async(req,res)=>{
+    const userId=req.body.userId;
+    const data=req.body;
+    try{
+        const newuser=await user.findByIdAndUpdate({_id:userId},data,{returnDocument:"before"});
+        console.log("user",newuser)
+        res.send("User updated successfully");
+     }
+     catch(err){
+         res.status(400).send("Error while fetching data",err.message);
+     }
+ 
 })
 
 connectDB().then(()=>{
