@@ -60,12 +60,20 @@ app.get("/feed",async(req,res)=>{
 
 })
 
-app.patch("/user",async(req,res)=>{
-    const userId=req.body.userId;
+app.patch("/user/:userId",async(req,res)=>{
+    const userId=req.params?.userId;
     const data=req.body;
+    const ALLOWED_UPDATE=["photoUrl","about","gender","age","skills"];
+    const isUpdateAllowed=Object.keys(data).every((k)=>ALLOWED_UPDATE.includes(k));
+    if(!isUpdateAllowed){
+        return res.status(400).send("Error while updating data");
+    }
+    if(data?.skills.length>10)  {
+        return res.status(400).send("skills can not be greater than 10");
+    }
     try{
         const newuser=await user.findByIdAndUpdate({_id:userId},data,{returnDocument:"before",runValidators:true});
-        console.log("user",newuser)
+        // console.log("user",newuser)
         res.send("User updated successfully");
      }
      catch(err){
