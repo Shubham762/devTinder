@@ -32,6 +32,29 @@ app.post("/signup",async(req,res)=>{
 
 });
 
+app.post("/login",async(req,res)=>{
+   try{
+      const {emailId,password}=req.body;
+      if(!emailId || !password){
+        throw new Error("Email and password is required");
+      }
+      const currentuser=await user.findOne({emailId});
+      if(!currentuser){  
+        throw new Error("Invalid crdentials");
+      }
+      const isPasswordValid=await bcrypt.compare(password,currentuser.password);
+      if(isPasswordValid){
+        res.send("User logged in successfully");
+      }
+      else{
+        res.status(401).send({ message: "Invalid password", error: "Invalid crdentials" });
+      }
+   }
+    catch(err){
+        res.status(400).send({ message: "Error while login with data", error: err.message });
+    }
+})
+
 app.get("/getuserone",async(req,res)=>{
     const userLastname=req.body.lastName;
     try{
