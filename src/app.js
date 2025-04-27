@@ -10,7 +10,7 @@ app.post("/signup",async(req,res)=>{
         res.send("User added successfully!!")
     }
     catch(err){
-        conres.status(400).send("Error while saving data",err.message);
+        res.status(400).send({ message: "Error while saving data", error: err.message });
     }
 
 });
@@ -64,7 +64,7 @@ app.patch("/user",async(req,res)=>{
     const userId=req.body.userId;
     const data=req.body;
     try{
-        const newuser=await user.findByIdAndUpdate({_id:userId},data,{returnDocument:"before"});
+        const newuser=await user.findByIdAndUpdate({_id:userId},data,{returnDocument:"before",runValidators:true});
         console.log("user",newuser)
         res.send("User updated successfully");
      }
