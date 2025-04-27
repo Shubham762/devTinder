@@ -22,7 +22,7 @@ app.get("/getuserone",async(req,res)=>{
         res.send(userdetails);
     }
     catch(err){
-      res.status(400).send("Error while fetching data",err.message);
+      res.status(400).send({ message: "Error while fetching data", error: err.message });
     }
   })
 
@@ -33,7 +33,7 @@ app.get("/getuser",async(req,res)=>{
         res.send(userdetails);
     }
     catch(err){
-      res.status(400).send("Error while fetching data",err.message);
+      res.status(400).send({ message: "Error while fetching data", error: err.message });
     }
   })
 
@@ -44,7 +44,7 @@ app.get("/getuser",async(req,res)=>{
         res.status(200).send("User Deleted successfully");
     }
     catch(err){
-      res.status(400).send("Can not be deleted",err.message);
+      res.status(400).send({ message: "Error while deleting user", error: err.message });
     }
   })
 
@@ -55,7 +55,7 @@ app.get("/feed",async(req,res)=>{
        res.send(alluserdeatisles);
     }
     catch(err){
-        res.status(400).send("Error while fetching data",err.message);
+        res.status(400).send({ message: "Error while fetching data", error: err.message });
     }
 
 })
@@ -63,7 +63,7 @@ app.get("/feed",async(req,res)=>{
 app.patch("/user/:userId",async(req,res)=>{
     const userId=req.params?.userId;
     const data=req.body;
-    const ALLOWED_UPDATE=["photoUrl","about","gender","age","skills"];
+    const ALLOWED_UPDATE=["photoUrl","about","gender","age","skills","password"];
     const isUpdateAllowed=Object.keys(data).every((k)=>ALLOWED_UPDATE.includes(k));
     if(!isUpdateAllowed){
         return res.status(400).send("Error while updating data");
@@ -77,7 +77,7 @@ app.patch("/user/:userId",async(req,res)=>{
         res.send("User updated successfully");
      }
      catch(err){
-         res.status(400).send("Error while fetching data",err.message);
+         res.status(400).send({ message: "Error while updating user", error: err.message });
      }
  
 })
