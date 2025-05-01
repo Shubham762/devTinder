@@ -4,7 +4,13 @@ const app=express();
 const user=require('../src/models/user');
 const { validateSignUpData }=require('../src/utils/validation');
 const bcrypt = require('bcrypt');
+const cookieParser=require('cookie-parser');
+const jwt=require('jsonwebtoken');
+const {userAuth}=require('./middlewares/auth');
+const e = require('express');
+
 app.use(express.json());
+app.use(cookieParser());
 app.post("/signup",async(req,res)=>{
     try{
     //validation of data 
@@ -12,7 +18,6 @@ app.post("/signup",async(req,res)=>{
     //encrypt password
     const { firstName, lastName, emailId, password }=req.body;
     const passwordHash=await bcrypt.hash(password,10);
-    // console.log(passwordHash);
     if(error){
         return res.status(400).send(error.message);
     }
@@ -42,8 +47,11 @@ app.post("/login",async(req,res)=>{
       if(!currentuser){  
         throw new Error("Invalid crdentials");
       }
-      const isPasswordValid=await bcrypt.compare(password,currentuser.password);
+      const isPasswordValid=currentuser.validatePassword(password);
       if(isPasswordValid){
+        //create JWT token 
+        const token=await currentuser.getJWT();
+        res.cookie("token",token,{expires:new Date(Date.now()+86400000),httpOnly:true});
         res.send("User logged in successfully");
       }
       else{
@@ -55,71 +63,20 @@ app.post("/login",async(req,res)=>{
     }
 })
 
-app.get("/getuserone",async(req,res)=>{
-    const userLastname=req.body.lastName;
+app.get("/profile",userAuth,async(req,res)=>{
     try{
-        const userdetails=await user.findOne({lastName:userLastname});
-        res.send(userdetails);
+        const userfortokenid=req.user;
+        res.send(userfortokenid);
     }
     catch(err){
       res.status(400).send({ message: "Error while fetching data", error: err.message });
     }
-  })
-
-app.get("/getuser",async(req,res)=>{
-    const userLastname=req.body.lastName;
-    try{
-        const userdetails=await user.find({lastName:userLastname});
-        res.send(userdetails);
-    }
-    catch(err){
-      res.status(400).send({ message: "Error while fetching data", error: err.message });
-    }
-  })
-
-  app.delete("/deleteuser",async(req,res)=>{
-    const userId=req.body.userId;
-    try{
-        const usertodelete=await user.findByIdAndDelete({_id:userId});
-        res.status(200).send("User Deleted successfully");
-    }
-    catch(err){
-      res.status(400).send({ message: "Error while deleting user", error: err.message });
-    }
-  })
-
-
-app.get("/feed",async(req,res)=>{
-    try{
-       const alluserdeatisles=await user.find({});
-       res.send(alluserdeatisles);
-    }
-    catch(err){
-        res.status(400).send({ message: "Error while fetching data", error: err.message });
-    }
-
 })
 
-app.patch("/user/:userId",async(req,res)=>{
-    const userId=req.params?.userId;
-    const data=req.body;
-    const ALLOWED_UPDATE=["photoUrl","about","gender","age","skills","password"];
-    const isUpdateAllowed=Object.keys(data).every((k)=>ALLOWED_UPDATE.includes(k));
-    if(!isUpdateAllowed){
-        return res.status(400).send("Error while updating data");
-    }
-    if(data?.skills.length>10)  {
-        return res.status(400).send("skills can not be greater than 10");
-    }
-    try{
-        const newuser=await user.findByIdAndUpdate({_id:userId},data,{returnDocument:"before",runValidators:true});
-        // console.log("user",newuser)
-        res.send("User updated successfully");
-     }
-     catch(err){
-         res.status(400).send({ message: "Error while updating user", error: err.message });
-     }
- 
+app.post("/sendConnectionRequest",userAuth,async (req,res)=>{
+      const user=req.user;
+      console.log("Sending connection request");
+      res.send(user.firstName+"  Connection request sent successfully");
 })
 
 connectDB().then(()=>{
