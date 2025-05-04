@@ -28,7 +28,17 @@ const validateEditProfileData=(req)=>{
     return isEditAllowed;
 }
 
+
+const validateNewPassowrdData=(req)=>{
+    const { password }=req.body;
+     if(!validator.isStrongPassword(password)){
+        return new Error("Password is not strong!");
+    }
+    return true;
+}
+
 module.exports={
     validateSignUpData,
-    validateEditProfileData
+    validateEditProfileData,
+    validateNewPassowrdData
 }
