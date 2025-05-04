@@ -44,9 +44,9 @@ profileRouter.patch("/profile/password",userAuth,async(req,res)=>{
         }
       // console.log("loginuser in  profile",req.body.password);
         const hashedPassword=await bcrypt.hash(req.body.password,10);
-        console.log("loginuser in  profile",hashedPassword);
+       // console.log("loginuser in  profile",hashedPassword);
         let loggedInUser=req.user;
-        console.log("loginuser in  ",loggedInUser);
+       // console.log("loginuser in  ",loggedInUser);
         loggedInUser.password = hashedPassword;
          await loggedInUser.save();
         res.json({ 
