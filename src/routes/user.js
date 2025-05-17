@@ -2,6 +2,7 @@ const express=require('express');
 const { userAuth } = require('../middlewares/auth');
 const ConnectionRequest = require('../models/connectionRequest');
 const userRouter=express.Router();
+const User=require('../models/user');
 
 const USER_SAFE_DATA="firstName lastName photoUrl about skills";
 
@@ -52,6 +53,42 @@ userRouter.get("/user/Connections",userAuth,async(req,res)=>{
     catch(err){
         res.status(400).send({ message: "Error while fetching connection request data", error: err.message });
       }
+});
+
+
+
+userRouter.get("/feed", userAuth , async(req, res)=>{
+     try{
+         const loggedInUser=req.user;
+         const connectionRequests=await ConnectionRequest.find({
+            $or:[
+                {fromUserId:loggedInUser._id},
+                {toUserId:loggedInUser._id}
+            ]
+         }).select("fromUserId toUserId");
+       // }).select("fromUserId toUserId").populate("fromUserId" , "firstName").populate("toUserId" ,"firstName");
+       
+         const hideUserFromFeed=new Set();
+         connectionRequests.forEach((request)=>{
+            hideUserFromFeed.add(request.fromUserId.toString());
+            hideUserFromFeed.add(request.toUserId.toString());
+         })
+         console.log(hideUserFromFeed);
+         const users=await User.find({
+            $and:[
+                {_id:{$nin: Array.from(hideUserFromFeed)}},
+                {_id:{$ne:loggedInUser._id}}
+            ]
+         }).select(USER_SAFE_DATA);
+         res.json({
+            message:"feed  fetched successfully",
+            data:users
+         });
+     }
+     catch(err){
+        res.status(400).send({ message: "Error while fetching feed api data", error: err.message });
+      }
+
 })
 
 
