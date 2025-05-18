@@ -46,7 +46,7 @@ authRouter.post("/login",async(req,res)=>{
          //create JWT token 
          const token=await currentuser.getJWT();
          res.cookie("token",token,{expires:new Date(Date.now()+86400000),httpOnly:true});
-         res.send("User logged in successfully");
+         res.send({ message: "Logged In succssesfully", data: currentuser });
        }
        else{
          res.status(401).send({ message: "Invalid password", error: "Invalid crdentials" });
