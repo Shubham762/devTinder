@@ -11,7 +11,7 @@ const authRouter = require('./auth');
 profileRouter.get("/profile/view",userAuth,async(req,res)=>{
     try{
         const userfortokenid=req.user;
-        res.send(userfortokenid);
+        res.send({ message: "fetching profile data", data: userfortokenid });
     }
     catch(err){
       res.status(400).send({ message: "Error while fetching data", error: err.message });

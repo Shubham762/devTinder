@@ -46,7 +46,7 @@ const userSchema=new mongoose.Schema({
     },
     photoUrl:{
         type:String,
-        default:"https://www.pngitem.com/middle/ixwxbwh_user-profile-dummy-hd-png-download/",
+        default:"https://lh3.googleusercontent.com/ogw/AF2bZyiv4t1qnMIYDOFOxSWXu8Nk2zSYNYEVviE6lcpHLpLI5OrO=s32-c-mo",
         validate(value){
             if(!validator.isURL(value)){
                 throw new Error("Email is not valid "+"-" + value)}
