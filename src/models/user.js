@@ -46,7 +46,7 @@ const userSchema=new mongoose.Schema({
     },
     photoUrl:{
         type:String,
-        default:"https://lh3.googleusercontent.com/ogw/AF2bZyiv4t1qnMIYDOFOxSWXu8Nk2zSYNYEVviE6lcpHLpLI5OrO=s32-c-mo",
+        default:"https://avatars.githubusercontent.com/u/44369765?s=400&u=bfe3d6129dd3467d8752f97c562e3c738a6b7a87&v=4",
         validate(value){
             if(!validator.isURL(value)){
                 throw new Error("Email is not valid "+"-" + value)}
